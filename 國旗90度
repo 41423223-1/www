@@ -1,0 +1,94 @@
+from browser import document as doc
+from browser import html
+import math
+
+# Create a canvas element
+canvas = html.CANVAS(width=600, height=400)
+canvas.id = "taiwan_flag"
+
+# Append canvas to the page
+brython_div = doc["brython_div1"]
+brython_div <= canvas
+
+# Prepare the canvas for drawing
+canvas = doc["taiwan_flag"]
+ctx = canvas.getContext("2d")
+
+# Flag dimensions
+flag_w = canvas.width
+flag_h = canvas.height
+circle_x = flag_w / 4
+circle_y = flag_h / 4
+
+# Rotate the entire flag by 90 degrees
+
+# Save the context state
+ctx.save()
+
+# Move the origin to the center of the canvas to rotate around the center
+ctx.translate(flag_w / 2, flag_h / 2)
+
+# Rotate by 90 degrees (π / 2 radians)
+ctx.rotate(math.pi / 2)
+
+# Translate back so the drawing is centered again
+ctx.translate(-flag_w / 2, -flag_h / 2)
+
+# Draw the flag content after rotation
+
+# Fill the background with red color
+ctx.fillStyle = 'rgb(255, 0, 0)'
+ctx.fillRect(0, 0, flag_w, flag_h)
+
+# Fill the blue square
+ctx.fillStyle = 'rgb(0, 0, 150)'
+ctx.fillRect(0, 0, flag_w / 2, flag_h / 2)
+
+# Draw the 12 rays (sun's rays)
+ctx.save()  # Save the current context state
+ctx.translate(circle_x, circle_y)  # Move the origin to the center of the sun
+
+# Loop to draw rays
+for i in range(12):
+    ctx.save()  # Save the current state before rotating
+    angle = i * 2 * math.pi / 12  # Angle for each ray
+
+    # Rotate the context by the calculated angle
+    ctx.rotate(angle)
+
+    # Draw the ray
+    star_radius = flag_w / 8
+    toX = star_radius  # Set the length of the ray
+    toY = 0  # Rays extend outward along the x-axis
+
+    ctx.beginPath()
+    ctx.moveTo(0, 0)  # Start at the center of the sun
+    ctx.lineTo(toX, toY)  # Draw the ray
+    ctx.closePath()
+    
+    # Set the color for the rays
+    ctx.strokeStyle = '#fff'
+    ctx.lineWidth = 2
+    ctx.stroke()
+    
+    ctx.restore()  # Restore the context to its previous state
+
+# Restore the context after drawing the rays
+ctx.restore()
+
+# Draw the blue circle (sky)
+ctx.beginPath()
+ctx.arc(circle_x, circle_y, flag_w * 17 / 240, 0, math.pi * 2, True)
+ctx.closePath()
+ctx.fillStyle = 'rgb(0, 0, 149)'
+ctx.fill()
+
+# Draw the white circle (sun)
+ctx.beginPath()
+ctx.arc(circle_x, circle_y, flag_w / 16, 0, math.pi * 2, True)
+ctx.closePath()
+ctx.fillStyle = '#fff'
+ctx.fill()
+
+# Restore the context to its original state
+ctx.restore()
