@@ -1,0 +1,75 @@
+from browser import document as doc
+from browser import html
+import math
+
+canvas = html.CANVAS(width = 600, height = 400)
+canvas.id = "taiwan_flag"
+brython_div = doc["brython_div1"]
+brython_div <= canvas
+
+canvas = doc["taiwan_flag"]
+ctx = canvas.getContext("2d")
+
+flag_w = canvas.width
+flag_h = canvas.height
+
+def draw_flag():
+    circle_x = flag_w / 4
+    circle_y = flag_h / 4
+
+    # 先畫滿地紅
+    ctx.fillStyle = 'rgb(255, 0, 0)'
+    ctx.fillRect(0, 0, flag_w, flag_h)
+
+    # 再畫青天
+    ctx.fillStyle = 'rgb(0, 0, 150)'
+    ctx.fillRect(0, 0, flag_w / 2, flag_h / 2)
+
+    # 畫十二道光芒白日
+    ctx.beginPath()
+    star_radius = flag_w / 8
+    angle = 0
+    for i in range(24):
+        angle += 5 * math.pi * 2 / 12
+        toX = circle_x + math.cos(angle) * star_radius
+        toY = circle_y + math.sin(angle) * star_radius
+        if i:
+            ctx.lineTo(toX, toY)
+        else:
+            ctx.moveTo(toX, toY)
+    ctx.closePath()
+    ctx.fillStyle = '#fff'
+    ctx.fill()
+
+    # 白日: 藍圈
+    ctx.beginPath()
+    ctx.arc(circle_x, circle_y, flag_w * 17 / 240, 0, math.pi * 2, True)
+    ctx.closePath()
+    ctx.fillStyle = 'rgb(0, 0, 149)'
+    ctx.fill()
+
+    # 白日: 白心
+    ctx.beginPath()
+    ctx.arc(circle_x, circle_y, flag_w / 16, 0, math.pi * 2, True)
+    ctx.closePath()
+    ctx.fillStyle = '#fff'
+    ctx.fill()
+# 先清空畫布
+ctx.clearRect(0, 0, flag_w, flag_h)
+
+ctx.save()  # 記住現在的變換狀態
+
+# 把原點移到畫布中心
+ctx.translate(flag_w / 2, flag_h / 2)
+
+# 順時針旋轉 90 度
+# 如果你覺得方向相反，就把 math.pi/2 改成 -math.pi/2
+ctx.rotate(math.pi / 4)
+
+# 把原點移回左上角 (讓 draw_flag 還是以 0,0 ~ flag_w,flag_h 畫圖)
+ctx.translate(-flag_w / 2, -flag_h / 2)
+
+# 在旋轉後的座標系統裡畫國旗
+draw_flag()
+
+ctx.restore()  # 還原座標系統
